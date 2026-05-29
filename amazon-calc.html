@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Сколько можно заработать на Amazon</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#070809; --card:rgba(255,255,255,.035); --line:rgba(255,255,255,.1);
+    --txt:#f4f6fa; --mut:#9aa2b0; --accent:#10d98a; --accent2:#22d3ee; --gold:#f5c451;
+    --rose:#fb7185;
+    --disp:'Sora',system-ui,sans-serif; --body:'Manrope',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--txt);font-family:var(--body);font-size:17px;line-height:1.65;
+    overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
+  body{padding-bottom:36px;position:relative}
+  body::before{content:'';position:fixed;inset:-20%;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(40% 30% at 50% -5%, rgba(16,217,138,.18), transparent 70%),
+      radial-gradient(36% 28% at 96% 12%, rgba(34,211,238,.10), transparent 70%),
+      radial-gradient(40% 30% at 0% 60%, rgba(245,196,81,.07), transparent 70%);
+    animation:aurora 22s ease-in-out infinite alternate}
+  @keyframes aurora{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(0,-2%,0) scale(1.06)}100%{transform:translate3d(0,2%,0) scale(1.03)}}
+  body::after{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
+  .hero{padding:48px 18px 18px;text-align:center;position:relative}
+  .hero .kicker{font-family:var(--disp);font-size:13px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;text-shadow:0 0 24px rgba(16,217,138,.5)}
+  .hero h1{font-family:var(--disp);font-size:42px;font-weight:800;letter-spacing:-1.5px;margin-bottom:14px;line-height:1.05;text-shadow:0 0 60px rgba(16,217,138,.25)}
+  .hero h1 .grad{
+    background:linear-gradient(110deg,#10d98a 0%,#22d3ee 25%,#f5c451 50%,#22d3ee 75%,#10d98a 100%);
+    background-size:200% 100%;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shimmer-grad 5s ease-in-out infinite}
+  @keyframes shimmer-grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .hero p{color:#cdd2db;font-size:17px;max-width:480px;margin:0 auto;line-height:1.55}
+  @media(max-width:380px){.hero{padding:38px 18px 14px} .hero h1{font-size:34px;letter-spacing:-1px}}
+
+  .section-h{display:flex;align-items:center;gap:12px;margin:38px 0 16px}
+  .section-h .bar{width:5px;height:28px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2));box-shadow:0 0 14px rgba(16,217,138,.5)}
+  .section-h h2{font-family:var(--disp);font-size:25px;font-weight:800;letter-spacing:-.5px}
+
+  .glass{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    backdrop-filter:blur(14px) saturate(120%);-webkit-backdrop-filter:blur(14px) saturate(120%);
+    box-shadow:0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05)}
+
+  .not-list{padding:20px 22px;display:flex;flex-direction:column;gap:12px}
+  .not-list .row{display:flex;gap:14px;align-items:center;font-size:17px;color:#e3e7ee}
+  .not-list .x{flex:0 0 30px;height:30px;border-radius:9px;background:rgba(251,113,133,.16);color:#fb7185;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px}
+  .yes{margin-top:14px;background:linear-gradient(135deg,rgba(16,217,138,.18),rgba(34,211,238,.06));border:1.5px solid rgba(16,217,138,.5);border-radius:18px;padding:20px 22px}
+  .yes b{font-family:var(--disp);font-size:19px;display:block;margin-bottom:8px;color:#86efac}
+  .yes p{font-size:16.5px;color:#e3e7ee;line-height:1.6}
+
+  .calc{padding:24px;display:flex;flex-direction:column;gap:22px}
+  .step{display:flex;flex-direction:column;gap:11px}
+  .step .lbl{font-family:var(--disp);font-size:16px;font-weight:700;color:#e3e7ee;line-height:1.4}
+  .step .lbl .hint{font-family:var(--body);font-size:13.5px;font-weight:500;color:var(--mut);display:block;margin-top:5px;line-height:1.5}
+  .step .lbl .v{color:var(--gold);font-weight:800}
+
+  .toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:5px}
+  .toggle button{background:transparent;border:none;color:var(--mut);padding:13px;font-family:var(--disp);font-size:16px;font-weight:700;cursor:pointer;border-radius:10px;transition:all .25s}
+  .toggle button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06281c;box-shadow:0 6px 20px rgba(16,217,138,.4)}
+  .toggle.period button.on{background:linear-gradient(135deg,var(--gold),#fb923c);color:#3b1d05;box-shadow:0 8px 22px rgba(245,196,81,.5);transform:scale(1.02)}
+
+  .input-wrap{position:relative}
+  .input-wrap input{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px 15px 50px;font-family:var(--disp);font-size:20px;font-weight:700;color:var(--txt);outline:none;transition:border-color .2s}
+  .input-wrap input:focus{border-color:var(--accent)}
+  .input-wrap .pfx{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-family:var(--disp);font-size:20px;font-weight:800;color:var(--accent)}
+  .row2{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center}
+  .row2 input{padding-left:16px;text-align:center}
+
+  .result{margin-top:14px;padding:24px;display:flex;flex-direction:column;gap:20px}
+  .res-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .res-card{padding:16px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);transition:transform .25s}
+  .res-card.flash{transform:scale(1.03);background:rgba(16,217,138,.08)}
+  .res-card .when{font-size:13px;color:var(--mut);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+  .res-card .amount{font-family:var(--disp);font-size:25px;font-weight:800;color:var(--accent);margin-top:6px;letter-spacing:-.5px}
+  .res-card .profit{font-size:13px;color:#86efac;margin-top:5px;font-weight:600;line-height:1.5}
+  .res-card.big{grid-column:1 / -1;background:linear-gradient(135deg,rgba(16,217,138,.18),rgba(245,196,81,.07));border-color:rgba(16,217,138,.5)}
+  .res-card.big .when{color:#86efac}
+  .res-card.big .amount{font-size:36px}
+
+  .chart{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;height:180px;padding:14px 4px 4px}
+  .bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+  .bar .col{width:100%;border-radius:8px 8px 0 0;background:linear-gradient(180deg,var(--accent2),var(--accent));min-height:8px;transition:height .5s cubic-bezier(.2,.8,.2,1);position:relative}
+  .bar .col span{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-family:var(--disp);font-size:11px;font-weight:800;color:var(--accent);white-space:nowrap}
+  .bar .x{font-family:var(--body);font-size:12px;color:var(--mut);font-weight:600}
+
+  .summary{font-size:15px;color:#cdd2db;padding:16px 18px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;line-height:1.65}
+  .summary b{color:var(--txt)}
+
+  .breakdown{margin-top:8px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);overflow:hidden}
+  .breakdown summary{padding:16px 18px;font-family:var(--disp);font-weight:700;font-size:16px;cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;color:#e3e7ee}
+  .breakdown summary::-webkit-details-marker{display:none}
+  .breakdown summary .arr{margin-left:auto;color:var(--mut);transition:transform .2s;font-size:18px}
+  .breakdown[open] summary .arr{transform:rotate(180deg)}
+  .breakdown .body{padding:0 16px 14px}
+  .bd-row{display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line);font-size:15px}
+  .bd-row .mn{font-family:var(--disp);font-size:13.5px;font-weight:800;color:var(--accent);letter-spacing:.5px}
+  .bd-row .formula{color:#e3e7ee;font-variant-numeric:tabular-nums;line-height:1.45}
+  .bd-row .formula .pl{color:#86efac;font-weight:700}
+  .bd-row .formula .mn-exp{color:#fb7185;font-weight:700}
+  .bd-row .formula .mul{color:var(--gold);font-weight:800}
+  .bd-row .mn{display:flex;flex-direction:column;gap:2px}
+  .bd-row .mn .bd-sub{font-family:var(--body);font-size:11.5px;font-weight:600;color:var(--mut);letter-spacing:0;text-transform:none}
+  .bd-row .out{font-family:var(--disp);font-weight:800;color:var(--accent2);font-variant-numeric:tabular-nums;font-size:15.5px}
+  .bd-legend{font-size:14px;color:#cdd2db;padding:4px 4px 10px;line-height:1.6}
+  .bd-legend b{color:#fff}
+
+  .disclaimer{font-size:13.5px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.6;padding:0 8px}
+
+  .path-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .path-card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;backdrop-filter:blur(14px)}
+  .path-imgwrap{position:relative;aspect-ratio:1;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center}
+  .path-imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
+  .path-imgwrap .ph{font-family:var(--disp);font-size:48px;font-weight:800;color:rgba(255,255,255,.08)}
+  .path-meta{padding:12px 14px}
+  .path-meta .step-n{font-family:var(--disp);font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--accent)}
+  .path-meta b{font-family:var(--disp);font-size:14px;display:block;margin-top:2px}
+
+  .cta-bar{margin:24px 0 12px}
+  .cta-main{width:100%;background:linear-gradient(95deg,#f5c451,#10d98a);color:#06281c;border:none;border-radius:15px;padding:16px;font-family:var(--disp);font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 28px rgba(16,217,138,.32)}
+
+  @media(max-width:380px){
+    .section-h h2{font-size:21px}
+    .res-cards{grid-template-columns:1fr}
+    .chart{height:150px}
+  }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="kicker">Amazon Бизнес</div>
+  <h1>Сколько <span class="grad">можно заработать</span></h1>
+  <p>Покажу цифры. Простая модель, в которой нет ни Китая, ни своего бренда, ни клиентов лично.</p>
+</div>
+
+<div class="wrap">
+
+  <div class="section-h"><span class="bar"></span><h2>Чего тут НЕТ</h2></div>
+  <div class="glass not-list">
+    <div class="row"><span class="x">✗</span>Не Китай</div>
+    <div class="row"><span class="x">✗</span>Не свой бренд</div>
+    <div class="row"><span class="x">✗</span>Не надо никого убеждать</div>
+    <div class="row"><span class="x">✗</span>Не работаем с людьми напрямую</div>
+    <div class="row"><span class="x">✗</span>Нет склада, офиса и подъёма в 6 утра</div>
+  </div>
+  <div class="yes">
+    <b>✓ А что есть</b>
+    <p>Amazon бизнес: вкладываешь деньги, склады Amazon хранят и доставляют, ты получаешь разницу. Дальше — сколько денег и времени нужно, и сколько можно заработать.</p>
+  </div>
+
+  <div class="section-h"><span class="bar"></span><h2>Посчитай свой рост</h2></div>
+  <div class="glass calc">
+
+    <div class="step">
+      <div class="lbl">Валюта</div>
+      <div class="toggle" id="curToggle">
+        <button data-cur="USD" class="on">$ USD</button>
+        <button data-cur="EUR">€ EUR</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="lbl">Сколько готовы вложить вначале?<span class="hint">Стартовый капитал на первую закупку</span></div>
+      <div class="input-wrap">
+        <span class="pfx" id="pfx1">$</span>
+        <input type="number" id="initial" inputmode="numeric" value="1000" min="100" step="100">
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="lbl">Как часто будете докладывать?<span class="hint">⚠️ Внимательно выберите — это сильно влияет на расчёт</span></div>
+      <div class="toggle period" id="periodToggle">
+        <button data-unit="days">Дни</button>
+        <button data-unit="months" class="on">Месяцы</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="lbl">Сколько готовы вкладывать дополнительно в <span class="v" id="periodPreview">1 месяц</span>?</div>
+      <div class="row2">
+        <div class="input-wrap"><input type="number" id="periodN" inputmode="numeric" value="1" min="1" step="1"></div>
+        <div class="input-wrap">
+          <span class="pfx" id="pfx2">$</span>
+          <input type="number" id="deposit" inputmode="numeric" value="200" min="0" step="50">
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="lbl">Доп. расходы в месяц<span class="hint">Инструменты, мелкая операционка — стандартно ~$100. Можно изменить.</span></div>
+      <div class="input-wrap">
+        <span class="pfx" id="pfx3">$</span>
+        <input type="number" id="expenses" inputmode="numeric" value="100" min="0" step="10">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="glass result" id="result">
+    <div class="res-cards">
+      <div class="res-card" id="card1"><div class="when">после 1 оборота · 1.5 мес</div><div class="amount" id="m1">—</div><div class="profit" id="p1"></div></div>
+      <div class="res-card" id="card2"><div class="when">после 2 оборотов · 3 мес</div><div class="amount" id="m2">—</div><div class="profit" id="p2"></div></div>
+      <div class="res-card" id="card4"><div class="when">после 4 оборотов · 6 мес</div><div class="amount" id="m4">—</div><div class="profit" id="p4"></div></div>
+      <div class="res-card big" id="card8"><div class="when">после 8 оборотов · 12 мес</div><div class="amount" id="m8">—</div><div class="profit" id="p8"></div></div>
+    </div>
+    <div class="chart" id="chart"></div>
+    <div class="summary" id="summary"></div>
+
+    <details class="breakdown">
+      <summary>Как такие цифры выходят, подробно <span class="arr">▾</span></summary>
+      <div class="body">
+        <div class="bd-legend">
+          Один <b>оборот товара</b> на Amazon — около <b>1.5 месяцев</b>: закупил → отправил на склад → продалось → деньги пришли обратно. За один оборот капитал растёт примерно на <b>20%</b>.<br><br>
+          Каждый цикл: <b>текущий капитал + долаживание − расходы за 1.5 мес</b> = в работу. Дальше <b>× 1.20</b>. Так повторяется снова и снова. Это и есть сложный процент.
+        </div>
+        <div id="breakdown"></div>
+      </div>
+    </details>
+  </div>
+
+  <div class="disclaimer">
+    Модель: один оборот товара ≈ 1.5 месяца, прибыль за оборот ≈ 20%, расходы вычитаются ежемесячно.
+    Реальность бывает быстрее или медленнее. Цифры показывают потенциал при стабильной работе по системе.
+  </div>
+
+  <div class="section-h"><span class="bar"></span><h2>Мой путь в скринах</h2></div>
+  <div class="path-grid">
+    <div class="path-card"><div class="path-imgwrap"><div class="ph">01</div><img src="path-1.png" alt="1" onerror="this.style.display='none'"></div><div class="path-meta"><div class="step-n">ШАГ 01</div><b>Начало пути</b></div></div>
+    <div class="path-card"><div class="path-imgwrap"><div class="ph">02</div><img src="path-2.png" alt="2" onerror="this.style.display='none'"></div><div class="path-meta"><div class="step-n">ШАГ 02</div><b>Первые продажи</b></div></div>
+    <div class="path-card"><div class="path-imgwrap"><div class="ph">03</div><img src="path-3.png" alt="3" onerror="this.style.display='none'"></div><div class="path-meta"><div class="step-n">ШАГ 03</div><b>Рост оборота</b></div></div>
+    <div class="path-card"><div class="path-imgwrap"><div class="ph">04</div><img src="path-4.png" alt="4" onerror="this.style.display='none'"></div><div class="path-meta"><div class="step-n">ШАГ 04</div><b>Стабильный доход</b></div></div>
+  </div>
+
+  <div class="cta-bar"><button class="cta-main" onclick="goContact()">💬 Хочу так же — написать Вадиму</button></div>
+</div>
+
+<script>
+const TG = window.Telegram ? window.Telegram.WebApp : null;
+if (TG) { TG.ready(); TG.expand(); }
+const params = new URLSearchParams(location.search);
+const CONTACT = params.get('contact') || 'https://t.me/vadjik';
+
+let CUR = 'USD';
+let PERIOD_UNIT = 'months';
+const ROI_CYCLE = 0.20;     // 20% за оборот
+const CYCLE_MONTHS = 1.5;   // один оборот товара — 1.5 месяца
+const CYCLES_PER_YEAR = 12 / CYCLE_MONTHS; // 8
+
+function curSign(){ return CUR === 'USD' ? '$' : '€'; }
+function fmt(n){ return curSign() + Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
+function fmtPlain(n){ return Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
+
+function plural(n, forms){
+  n = Math.abs(n)%100;
+  const n1 = n%10;
+  if (n>10 && n<20) return forms[2];
+  if (n1>1 && n1<5) return forms[1];
+  if (n1===1) return forms[0];
+  return forms[2];
+}
+const M_FORMS = ['месяц','месяца','месяцев'];
+const D_FORMS = ['день','дня','дней'];
+
+function updatePeriodPreview(){
+  const n = Math.max(1, parseInt(document.getElementById('periodN').value)||1);
+  const forms = PERIOD_UNIT === 'days' ? D_FORMS : M_FORMS;
+  document.getElementById('periodPreview').textContent = n + ' ' + plural(n, forms);
+}
+
+document.querySelectorAll('#curToggle button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('#curToggle button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    CUR = b.dataset.cur;
+    const s = curSign();
+    ['pfx1','pfx2','pfx3'].forEach(id=>{ const el=document.getElementById(id); if(el) el.textContent = s; });
+    calculate();
+  };
+});
+document.querySelectorAll('#periodToggle button').forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll('#periodToggle button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    PERIOD_UNIT = b.dataset.unit;
+    try { TG && TG.HapticFeedback && TG.HapticFeedback.selectionChanged(); } catch(e){}
+    updatePeriodPreview();
+    calculate();
+  };
+});
+
+['initial','periodN','deposit','expenses'].forEach(id=>{
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('input', ()=>{ if(id==='periodN') updatePeriodPreview(); calculate(); });
+});
+
+function getPeriodInMonths(){
+  const periodN = Math.max(1, parseFloat(document.getElementById('periodN').value)||1);
+  return PERIOD_UNIT === 'days' ? (periodN/30) : periodN;
+}
+
+function simulate(initial, periodInMonths, deposit, monthlyExpense, totalCycles){
+  // Один цикл = 1.5 месяца. За цикл:
+  //   1) Доложили деньги (если попало в период)
+  //   2) Сразу вычли расходы за 1.5 месяца (monthlyExpense × 1.5)
+  //   3) То, что осталось, ушло в оборот и выросло на 20%
+  // Сколько долаживаний попадает в цикл — зависит от периода:
+  //   если period < 1.5 мес (например, раз в месяц), за цикл = 1.5/period долаживаний
+  //   если period >= 1.5 мес, долаживание делается каждые ceil(period/1.5) циклов
+  const expensesPerCycle = monthlyExpense * CYCLE_MONTHS;
+  let depositPerCycle, cyclesPerDeposit;
+  if (periodInMonths < CYCLE_MONTHS) {
+    depositPerCycle = deposit * (CYCLE_MONTHS / periodInMonths);
+    cyclesPerDeposit = 1;
+  } else {
+    depositPerCycle = deposit;
+    cyclesPerDeposit = Math.max(1, Math.round(periodInMonths / CYCLE_MONTHS));
+  }
+
+  let cap = initial;
+  let totalIn = initial;
+  const path = [{c:0, month:0, cap, totalIn, before:cap, deposited:0, expenses:0, mid:cap}];
+
+  for (let c = 1; c <= totalCycles; c++){
+    const before = cap;
+    let dep = 0;
+    if (periodInMonths < CYCLE_MONTHS) {
+      dep = depositPerCycle;
+    } else if (c % cyclesPerDeposit === 0) {
+      dep = depositPerCycle;
+    }
+    cap += dep;
+    cap -= expensesPerCycle;
+    totalIn += dep;
+    const mid = cap;
+    cap *= (1 + ROI_CYCLE);
+    path.push({c, month: c * CYCLE_MONTHS, cap, totalIn, before, deposited:dep, expenses:expensesPerCycle, mid});
+  }
+  return path;
+}
+
+function flash(el){
+  el.classList.add('flash');
+  setTimeout(()=>el.classList.remove('flash'), 250);
+}
+
+function calculate(){
+  const initial = Math.max(0, parseFloat(document.getElementById('initial').value)||0);
+  const monthlyExpense = Math.max(0, parseFloat(document.getElementById('expenses').value)||0);
+  const periodInMonths = getPeriodInMonths();
+  const deposit = Math.max(0, parseFloat(document.getElementById('deposit').value)||0);
+
+  // 8 циклов = 12 месяцев
+  const path = simulate(initial, periodInMonths, deposit, monthlyExpense, 8);
+  const at = c => path.find(x=>x.c===c);
+  const r1 = at(1), r2 = at(2), r4 = at(4), r8 = at(8);
+
+  const setCard = (id, r) => {
+    document.getElementById('m'+id).textContent = fmt(Math.max(0, r.cap));
+    const profit = r.cap - r.totalIn;
+    const profitText = profit >= 0
+      ? 'Прибыль: ' + fmt(profit) + ' · Вложено: ' + fmt(r.totalIn)
+      : 'Пока в минусе: ' + fmt(-profit) + ' · Вложено: ' + fmt(r.totalIn);
+    document.getElementById('p'+id).textContent = profitText;
+    flash(document.getElementById('card'+id));
+  };
+  setCard(1,r1); setCard(2,r2); setCard(4,r4); setCard(8,r8);
+
+  const pts = [r1,r2,r4,r8];
+  const labels = ['1.5 мес','3 мес','6 мес','12 мес'];
+  const max = Math.max(...pts.map(p=>Math.max(0,p.cap)));
+  document.getElementById('chart').innerHTML = pts.map((p,i)=>{
+    const h = Math.max(8, Math.round((Math.max(0,p.cap)/Math.max(1,max))*150));
+    return '<div class="bar"><div class="col" style="height:'+h+'px"><span>'+fmt(Math.max(0,p.cap))+'</span></div><div class="x">'+labels[i]+'</div></div>';
+  }).join('');
+
+  const profitYear = r8.cap - r8.totalIn;
+  let periodStr;
+  if (PERIOD_UNIT === 'days') {
+    const n = parseInt(document.getElementById('periodN').value)||1;
+    periodStr = 'каждые '+n+' '+plural(n,D_FORMS)+' по '+fmt(deposit);
+  } else {
+    const n = parseInt(document.getElementById('periodN').value)||1;
+    periodStr = 'каждые '+n+' '+plural(n,M_FORMS)+' по '+fmt(deposit);
+  }
+  document.getElementById('summary').innerHTML =
+    'Старт <b>'+fmt(initial)+'</b>, докладываете '+periodStr+', расходы <b>'+fmt(monthlyExpense)+'/мес</b>.<br>'+
+    'Через год капитал — <b>'+fmt(Math.max(0,r8.cap))+'</b>, '+
+    (profitYear>=0 ? 'из них <b>'+fmt(profitYear)+'</b> — прибыль.' : 'пока в минусе на <b>'+fmt(-profitYear)+'</b>.')+'<br>'+
+    '<span style="color:var(--mut)">Оборот 1.5 мес · 20% за оборот · 8 оборотов в год.</span>';
+
+  // Подробный расчёт — по оборотам (8 шагов)
+  const bd = document.getElementById('breakdown');
+  let html = '';
+  for (let c = 1; c <= 8; c++){
+    const r = at(c);
+    let formula = '<span>'+fmtPlain(r.before)+'</span>';
+    if (r.deposited > 0) formula += ' <span class="pl">+ '+fmtPlain(r.deposited)+'</span>';
+    if (r.expenses > 0) formula += ' <span class="mn-exp">− '+fmtPlain(r.expenses)+'</span>';
+    formula += ' = <span>'+fmtPlain(r.mid)+'</span> <span class="mul">× 1.20</span>';
+    const label = 'О'+c;
+    const sub = '<span class="bd-sub">мес '+(c*CYCLE_MONTHS).toString().replace('.0','')+'</span>';
+    html += '<div class="bd-row"><div class="mn">'+label+sub+'</div><div class="formula">'+formula+'</div><div class="out">'+fmt(Math.max(0,r.cap))+'</div></div>';
+  }
+  bd.innerHTML = html;
+}
+
+function goContact(){
+  var clean = CONTACT.replace(/^https?:\/\//,'');
+  var full = 'https://'+clean;
+  if(TG && TG.openTelegramLink){ TG.openTelegramLink(full); }
+  else { window.open(full, '_blank'); }
+}
+
+window.addEventListener('load', ()=>{
+  updatePeriodPreview();
+  setTimeout(calculate, 200);
+});
+</script>
+</body>
+</html>
