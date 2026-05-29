@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Amazon с Вадимом</title>
-<!-- app-build:20260529 -->
+<!-- app-build:20260529b -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -525,49 +525,41 @@ function isDiscountVisible(){
   return DEADLINE > nowSec() && DISC > 0 && (PROMO_REAL || PREVIEW_MODE);
 }
 
-function persistPromoState(){
-  if (!PROMO_REAL) return;
-  try {
-    localStorage.setItem('promo_v1', JSON.stringify({
-      deadline:DEADLINE, disc:DISC, discount:DISCOUNT, sig:SIG, uid:UID,
-      preview: false
-    }));
-  } catch(e) {}
-}
-
 function resetDiscountDisplay(){
-  if (PROMO_REAL) return;
   PREVIEW_MODE = false;
+  PROMO_REAL = false;
   DISC = 0;
   DEADLINE = 0;
+  DISCOUNT = '';
+  SIG = '';
+  UID = '';
 }
 
-try {
+function applyPromoFromUrl(){
   var discUrl = parseInt(params.get('disc')||'0',10);
-  if (DEADLINE > NOW_S && discUrl > 0 && SIG && UID && DISCOUNT) {
+  var deadline = parseInt(params.get('deadline')||'0',10);
+  var sig = params.get('sig')||'';
+  var uid = params.get('uid')||'';
+  var discount = params.get('discount')||'';
+  var tgUid = TG && TG.initDataUnsafe && TG.initDataUnsafe.user
+    ? String(TG.initDataUnsafe.user.id) : '';
+  if (deadline > NOW_S && discUrl > 0 && sig && uid && discount) {
+    if (tgUid && tgUid !== String(uid)) {
+      resetDiscountDisplay();
+      return;
+    }
+    DEADLINE = deadline;
     DISC = discUrl;
+    DISCOUNT = discount;
+    SIG = sig;
+    UID = uid;
     PROMO_REAL = true;
     PREVIEW_MODE = false;
-    persistPromoState();
-  } else {
-    const saved = JSON.parse(localStorage.getItem('promo_v1')||'null');
-    if (saved && !saved.preview && saved.deadline > NOW_S && saved.disc > 0
-        && saved.sig && saved.uid && saved.discount) {
-      DEADLINE = saved.deadline;
-      DISC = saved.disc;
-      DISCOUNT = saved.discount;
-      SIG = saved.sig;
-      UID = saved.uid;
-      PROMO_REAL = true;
-      PREVIEW_MODE = false;
-    } else {
-      resetDiscountDisplay();
-      try { localStorage.removeItem('promo_v1'); } catch(e) {}
-    }
+    return;
   }
-} catch(e) {
   resetDiscountDisplay();
 }
+applyPromoFromUrl();
 
 function discPrice(p){ return Math.round(p*(100-DISC)/100); }
 function savings(p){ return p - discPrice(p); }

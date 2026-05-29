@@ -125,15 +125,6 @@
 
   .disclaimer{font-size:13.5px;color:var(--mut);text-align:center;margin-top:14px;line-height:1.6;padding:0 8px}
 
-  .path-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .path-card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;backdrop-filter:blur(14px)}
-  .path-imgwrap{position:relative;aspect-ratio:1;background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center}
-  .path-imgwrap img{width:100%;height:100%;object-fit:cover;display:block}
-  .path-imgwrap .ph{font-family:var(--disp);font-size:48px;font-weight:800;color:rgba(255,255,255,.08)}
-  .path-meta{padding:12px 14px}
-  .path-meta .step-n{font-family:var(--disp);font-size:11.5px;font-weight:700;letter-spacing:1px;color:var(--accent)}
-  .path-meta b{font-family:var(--disp);font-size:14px;display:block;margin-top:2px}
-
   .cta-bar{position:fixed;left:0;right:0;bottom:var(--tg-safe-bottom,0px);background:rgba(7,8,9,.9);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:13px 16px calc(16px + env(safe-area-inset-bottom,0px));z-index:30}
   .cta-bar .inner{max-width:680px;margin:0 auto}
   @media (min-width:768px){ .cta-bar .inner{max-width:min(960px,94vw)} }
@@ -142,7 +133,6 @@
 
   @media (min-width:768px){
     .calc{padding:28px 32px}
-    .path-grid{grid-template-columns:repeat(4,1fr)}
     .res-card.big .amount{font-size:42px}
     .chart{height:200px}
   }
@@ -253,14 +243,6 @@
     Реальность бывает быстрее или медленнее. Цифры показывают потенциал при стабильной работе по системе.
   </div>
 
-  <div class="section-h"><span class="bar"></span><h2>Мой путь в скринах</h2></div>
-  <div class="path-grid">
-    <div class="path-card"><div class="path-imgwrap"><div class="ph">01</div><img src="" alt="1" style="display:none"></div><div class="path-meta"><div class="step-n">ШАГ 01</div><b>Начало пути</b></div></div>
-    <div class="path-card"><div class="path-imgwrap"><div class="ph">02</div><img src="" alt="2" style="display:none"></div><div class="path-meta"><div class="step-n">ШАГ 02</div><b>Первые продажи</b></div></div>
-    <div class="path-card"><div class="path-imgwrap"><div class="ph">03</div><img src="" alt="3" style="display:none"></div><div class="path-meta"><div class="step-n">ШАГ 03</div><b>Рост оборота</b></div></div>
-    <div class="path-card"><div class="path-imgwrap"><div class="ph">04</div><img src="" alt="4" style="display:none"></div><div class="path-meta"><div class="step-n">ШАГ 04</div><b>Стабильный доход</b></div></div>
-  </div>
-
   <div style="height:24px"></div>
 </div>
 
@@ -341,28 +323,6 @@ initTelegramViewport();
 window.addEventListener('resize', updateBottomInsets);
 const params = new URLSearchParams(location.search);
 const CONTACT = params.get('contact') || 'https://t.me/vadjik';
-
-function setPathImages(){
-  document.querySelectorAll('.path-card').forEach(function(card, idx){
-    var src = params.get('img' + (idx + 1));
-    var img = card.querySelector('img');
-    var ph = card.querySelector('.ph');
-    if (!img) return;
-    if (!src) {
-      img.style.display = 'none';
-      return;
-    }
-    img.onload = function(){
-      img.style.display = 'block';
-      if (ph) ph.style.display = 'none';
-    };
-    img.onerror = function(){
-      img.style.display = 'none';
-      if (ph) ph.style.display = 'flex';
-    };
-    img.src = src;
-  });
-}
 
 let CUR = 'USD';
 let PERIOD_UNIT = 'months';
@@ -536,7 +496,6 @@ function goContact(){
 }
 
 window.addEventListener('load', ()=>{
-  setPathImages();
   updatePeriodPreview();
   setTimeout(calculate, 200);
 });
