@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Amazon с Вадимом</title>
-<!-- app-build:20260529e -->
+<!-- app-build:20260529f -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -813,7 +813,7 @@ function updateCta(){
   var main=$('ctaMain');
   if(!main) return;
   if(isDiscountVisible()){
-    main.innerHTML='🛒 На сайт — выбрать формат<span class="cta-sub">−'+DISC+'% · тот же таймер, что здесь</span>';
+    main.innerHTML='🛒 На сайт — выбрать формат<span class="cta-sub">−'+DISC+'% · '+PROMO_HOURS+' ч</span>';
   } else if(FUNNEL_LOCKED){
     main.innerHTML='💬 Написать Вадиму<span class="cta-sub">стандартные цены · без спецбонуса</span>';
     main.classList.remove('btn-fire');
@@ -900,7 +900,7 @@ function initPromoBar(){
     }
     var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60,pad=function(n){return(n<10?'0':'')+n;};
     var title='🔥 Скидка −'+DISC+'% · осталось';
-    var sub='Тот же таймер на сайте · vadjik.com/faster_discount';
+    var sub='vadjik.com/faster_discount';
     bar.innerHTML='<div class="pt">'+title+'</div><div class="timer">'+pad(h)+':'+pad(m)+':'+pad(s)+'</div><div class="ps">'+sub+'</div>';
     updateCta();
   }
