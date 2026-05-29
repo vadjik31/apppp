@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Amazon с Вадимом</title>
-<!-- app-build:20260529b -->
+<!-- app-build:20260529c -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -764,7 +764,7 @@ function activatePromoPreview(){
   });
   initPromoBar();
   updateCta();
-  showToast('Готово: ниже цены «было → стало». Листайте к форматам ↓');
+  showToast('Скидка −'+DEFAULT_DISC+'% на 24 ч · закрепляем в боте…');
   var el=$('tariffs');
   if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'start'}); }, 350);
 }
@@ -775,6 +775,12 @@ function botDeepLink(start){
 }
 
 function claimPromoInBot(){
+  if(TG && TG.sendData){
+    TG.sendData('claim_promo');
+    showToast('Скидка −'+DEFAULT_DISC+'% на 24 ч · закрепляем…');
+    if(TG.HapticFeedback) TG.HapticFeedback.notificationOccurred('success');
+    return;
+  }
   var url = botDeepLink('claim_promo');
   if(TG && TG.openTelegramLink){
     TG.openTelegramLink(url);
@@ -805,12 +811,13 @@ function book(){
     openDiscountSite();
     return;
   }
-  if(isDiscountVisible() && PREVIEW_MODE){
+  if(!isDiscountVisible()){
+    activatePromoPreview();
     claimPromoInBot();
     return;
   }
-  if(!isDiscountVisible()){
-    activatePromoPreview();
+  if(isDiscountVisible() && PREVIEW_MODE){
+    claimPromoInBot();
   }
 }
 
@@ -818,9 +825,9 @@ function updateCta(){
   var main=$('ctaMain');
   if(!main) return;
   if(isDiscountVisible() && PROMO_REAL && DISCOUNT){
-    main.innerHTML='🛒 Перейти на сайт со скидкой<span class="cta-sub">−'+DISC+'% · цены уже пересчитаны</span>';
+    main.innerHTML='🛒 Перейти на сайт со скидкой<span class="cta-sub">−'+DISC+'% · закреплено на 24 ч</span>';
   } else if(isDiscountVisible()){
-    main.innerHTML='🔥 Закрепить скидку на 24 ч<span class="cta-sub">откроется чат с ботом · аппка останется здесь</span>';
+    main.innerHTML='🔥 Закрепляем скидку на 24 ч…<span class="cta-sub">бот пришлёт таймер · снова откройте «Форматы»</span>';
   } else if(FUNNEL_LOCKED){
     main.innerHTML='💬 Написать Вадиму<span class="cta-sub">стандартные цены · без спецбонуса</span>';
     main.classList.remove('btn-fire');
@@ -905,11 +912,11 @@ function initPromoBar(){
     }
     var h=Math.floor(left/3600),m=Math.floor((left%3600)/60),s=left%60,pad=function(n){return(n<10?'0':'')+n;};
     var title=PROMO_REAL
-      ? '🔥 Скидка −'+DISC+'% закреплена'
-      : '👀 Предпросмотр −'+DISC+'%';
+      ? '🔥 Скидка −'+DISC+'% закреплена на 24 ч'
+      : '⏳ Закрепляем −'+DISC+'% на 24 ч…';
     var sub=PROMO_REAL
-      ? 'Цены ниже «было → стало» · таймер идёт'
-      : 'Так выглядят цены · закрепите кнопкой внизу';
+      ? 'Цены «было → стало» · таймер обновляется'
+      : 'Секунду — бот закрепит · потом снова откройте «Форматы»';
     bar.innerHTML='<div class="pt">'+title+'</div><div class="timer">'+pad(h)+':'+pad(m)+':'+pad(s)+'</div><div class="ps">'+sub+'</div>';
     updateCta();
   }
