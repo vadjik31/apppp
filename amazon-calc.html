@@ -17,6 +17,10 @@
     --tg-safe-bottom:0px; --tg-viewport-height:100vh;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  button,.toggle button,.breakdown summary{
+    touch-action:manipulation;-webkit-user-select:none;user-select:none;cursor:pointer}
+  .toggle button{min-height:48px;position:relative;z-index:1}
+  .toggle button>*{pointer-events:none}
   html,body{background:var(--bg);color:var(--txt);font-family:var(--body);font-size:17px;line-height:1.65;
     overscroll-behavior-y:none;-webkit-font-smoothing:antialiased}
   body{padding-bottom:calc(24px + var(--tg-safe-bottom,0px) + env(safe-area-inset-bottom,0px));position:relative;min-height:var(--tg-viewport-height,100vh)}
@@ -74,9 +78,10 @@
   .step .lbl .v{color:var(--gold);font-weight:800}
 
   .toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:5px}
-  .toggle button{background:transparent;border:none;color:var(--mut);padding:13px;font-family:var(--disp);font-size:16px;font-weight:700;cursor:pointer;border-radius:10px;transition:all .25s}
+  .toggle button{background:transparent;border:none;color:var(--mut);padding:13px;font-family:var(--disp);font-size:16px;font-weight:700;cursor:pointer;border-radius:10px;transition:background .25s,box-shadow .25s,color .25s}
   .toggle button.on{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#06281c;box-shadow:0 6px 20px rgba(16,217,138,.4)}
-  .toggle.period button.on{background:linear-gradient(135deg,var(--gold),#fb923c);color:#3b1d05;box-shadow:0 8px 22px rgba(245,196,81,.5);transform:scale(1.02)}
+  .toggle.period button.on{background:linear-gradient(135deg,var(--gold),#fb923c);color:#3b1d05;box-shadow:0 8px 22px rgba(245,196,81,.5)}
+  @media (hover:none) and (pointer:coarse){ .toggle.period button.on{transform:none} }
 
   .input-wrap{position:relative}
   .input-wrap input{width:100%;background:rgba(255,255,255,.04);border:1.5px solid var(--line);border-radius:14px;padding:15px 16px 15px 50px;font-family:var(--disp);font-size:20px;font-weight:700;color:var(--txt);outline:none;transition:border-color .2s}
@@ -168,8 +173,8 @@
     <div class="step">
       <div class="lbl">Валюта</div>
       <div class="toggle" id="curToggle">
-        <button data-cur="USD" class="on">$ USD</button>
-        <button data-cur="EUR">€ EUR</button>
+        <button type="button" data-cur="USD" class="on">$ USD</button>
+        <button type="button" data-cur="EUR">€ EUR</button>
       </div>
     </div>
 
@@ -184,8 +189,8 @@
     <div class="step">
       <div class="lbl">Как часто будете докладывать?<span class="hint">⚠️ Внимательно выберите — это сильно влияет на расчёт</span></div>
       <div class="toggle period" id="periodToggle">
-        <button data-unit="days">Дни</button>
-        <button data-unit="months" class="on">Месяцы</button>
+        <button type="button" data-unit="days">Дни</button>
+        <button type="button" data-unit="months" class="on">Месяцы</button>
       </div>
     </div>
 
@@ -354,6 +359,38 @@ document.querySelectorAll('#periodToggle button').forEach(b=>{
     calculate();
   };
 });
+
+(function initReliableTouch(){
+  var touchStart = null;
+  var TAP_MAX_MS = 450;
+  var TAP_MAX_MOVE = 14;
+  function tapTarget(el){
+    return el && el.closest && el.closest('.toggle button,.breakdown summary');
+  }
+  document.addEventListener('touchstart', function(e){
+    var t = tapTarget(e.target);
+    if(!t) { touchStart = null; return; }
+    var touch = e.touches && e.touches[0];
+    if(!touch) return;
+    touchStart = {el:t, x:touch.clientX, y:touch.clientY, t:Date.now()};
+  }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if(!touchStart) return;
+    var t = touchStart.el;
+    if(!t || !document.contains(t)) { touchStart = null; return; }
+    var touch = e.changedTouches && e.changedTouches[0];
+    if(!touch) { touchStart = null; return; }
+    var dt = Date.now() - touchStart.t;
+    var dx = Math.abs(touch.clientX - touchStart.x);
+    var dy = Math.abs(touch.clientY - touchStart.y);
+    touchStart = null;
+    if(dt > TAP_MAX_MS || dx > TAP_MAX_MOVE || dy > TAP_MAX_MOVE) return;
+    if(!tapTarget(e.target) && !t.contains(e.target)) return;
+    e.preventDefault();
+    t.click();
+    try { TG && TG.HapticFeedback && TG.HapticFeedback.impactOccurred('light'); } catch(x){}
+  }, {passive:false});
+})();
 
 ['initial','periodN','deposit','expenses'].forEach(id=>{
   const el = document.getElementById(id);
