@@ -314,9 +314,14 @@ window.addEventListener('resize', updateBottomInsets);
 
 let CUR = 'USD';
 let PERIOD_UNIT = 'months';
-const ROI_CYCLE = 0.20;     // 20% за оборот
-const CYCLE_MONTHS = 1.5;   // один оборот товара — 1.5 месяца
-const CYCLES_PER_YEAR = 12 / CYCLE_MONTHS; // 8
+const ROI_CYCLE = 0.20;
+const CYCLE_MONTHS = 1.5;
+const CYCLES_PER_YEAR = 12 / CYCLE_MONTHS;
+const MIN_PERIOD_DAYS = 7;
+const MAX_PERIOD_DAYS = 365;
+const MIN_PERIOD_MONTHS = 1;
+const MAX_PERIOD_MONTHS = 24;
+const MAX_DEPOSITS_PER_CYCLE = 3;
 
 function curSign(){ return CUR === 'USD' ? '$' : '€'; }
 function fmt(n){ return curSign() + Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
@@ -333,10 +338,37 @@ function plural(n, forms){
 const M_FORMS = ['месяц','месяца','месяцев'];
 const D_FORMS = ['день','дня','дней'];
 
+function readPeriodN(){
+  var raw = parseFloat(document.getElementById('periodN').value);
+  if(!isFinite(raw) || raw <= 0) raw = 1;
+  if(PERIOD_UNIT === 'days'){
+    raw = Math.round(raw);
+    return Math.min(MAX_PERIOD_DAYS, Math.max(MIN_PERIOD_DAYS, raw));
+  }
+  raw = Math.round(raw);
+  return Math.min(MAX_PERIOD_MONTHS, Math.max(MIN_PERIOD_MONTHS, raw));
+}
+
+function syncPeriodInputAttrs(){
+  var el = document.getElementById('periodN');
+  if(!el) return;
+  if(PERIOD_UNIT === 'days'){
+    el.min = MIN_PERIOD_DAYS;
+    el.max = MAX_PERIOD_DAYS;
+  } else {
+    el.min = MIN_PERIOD_MONTHS;
+    el.max = MAX_PERIOD_MONTHS;
+  }
+  el.step = 1;
+}
+
 function updatePeriodPreview(){
-  const n = Math.max(1, parseInt(document.getElementById('periodN').value)||1);
+  syncPeriodInputAttrs();
+  const n = readPeriodN();
   const forms = PERIOD_UNIT === 'days' ? D_FORMS : M_FORMS;
   document.getElementById('periodPreview').textContent = n + ' ' + plural(n, forms);
+  var el = document.getElementById('periodN');
+  if(el && String(el.value) !== String(n)) el.value = n;
 }
 
 document.querySelectorAll('#curToggle button').forEach(b=>{
@@ -398,22 +430,22 @@ document.querySelectorAll('#periodToggle button').forEach(b=>{
 });
 
 function getPeriodInMonths(){
-  const periodN = Math.max(1, parseFloat(document.getElementById('periodN').value)||1);
-  return PERIOD_UNIT === 'days' ? (periodN/30) : periodN;
+  const periodN = readPeriodN();
+  return PERIOD_UNIT === 'days' ? (periodN / 30) : periodN;
+}
+
+function depositsPerCycle(periodInMonths){
+  if(periodInMonths >= CYCLE_MONTHS) return 0;
+  var count = Math.floor(CYCLE_MONTHS / periodInMonths);
+  return Math.min(Math.max(1, count), MAX_DEPOSITS_PER_CYCLE);
 }
 
 function simulate(initial, periodInMonths, deposit, monthlyExpense, totalCycles){
-  // Один цикл = 1.5 месяца. За цикл:
-  //   1) Доложили деньги (если попало в период)
-  //   2) Сразу вычли расходы за 1.5 месяца (monthlyExpense × 1.5)
-  //   3) То, что осталось, ушло в оборот и выросло на 20%
-  // Сколько долаживаний попадает в цикл — зависит от периода:
-  //   если period < 1.5 мес (например, раз в месяц), за цикл = 1.5/period долаживаний
-  //   если period >= 1.5 мес, долаживание делается каждые ceil(period/1.5) циклов
   const expensesPerCycle = monthlyExpense * CYCLE_MONTHS;
-  let depositPerCycle, cyclesPerDeposit;
+  let depositPerCycle = 0;
+  let cyclesPerDeposit = 1;
   if (periodInMonths < CYCLE_MONTHS) {
-    depositPerCycle = deposit * (CYCLE_MONTHS / periodInMonths);
+    depositPerCycle = deposit * depositsPerCycle(periodInMonths);
     cyclesPerDeposit = 1;
   } else {
     depositPerCycle = deposit;
@@ -478,19 +510,18 @@ function calculate(){
   }).join('');
 
   const profitYear = r8.cap - r8.totalIn;
+  const n = readPeriodN();
   let periodStr;
   if (PERIOD_UNIT === 'days') {
-    const n = parseInt(document.getElementById('periodN').value)||1;
     periodStr = 'каждые '+n+' '+plural(n,D_FORMS)+' по '+fmt(deposit);
   } else {
-    const n = parseInt(document.getElementById('periodN').value)||1;
     periodStr = 'каждые '+n+' '+plural(n,M_FORMS)+' по '+fmt(deposit);
   }
   document.getElementById('summary').innerHTML =
     'Старт <b>'+fmt(initial)+'</b>, докладываете '+periodStr+', расходы <b>'+fmt(monthlyExpense)+'/мес</b>.<br>'+
     'Через год капитал — <b>'+fmt(Math.max(0,r8.cap))+'</b>, '+
     (profitYear>=0 ? 'из них <b>'+fmt(profitYear)+'</b> — прибыль.' : 'пока в минусе на <b>'+fmt(-profitYear)+'</b>.')+'<br>'+
-    '<span style="color:var(--mut)">Оборот 1.5 мес · 20% за оборот · 8 оборотов в год.</span>';
+    '<span style="color:var(--mut)">Оборот 1.5 мес · 20% за оборот · 8 оборотов в год · до '+MAX_DEPOSITS_PER_CYCLE+' доложений за оборот.</span>';
 
   // Подробный расчёт — по оборотам (8 шагов)
   const bd = document.getElementById('breakdown');
