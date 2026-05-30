@@ -317,36 +317,30 @@ let PERIOD_UNIT = 'months';
 const ROI_CYCLE = 0.20;
 const CYCLE_MONTHS = 1.5;
 const CYCLES_PER_YEAR = 12 / CYCLE_MONTHS;
-const MIN_PERIOD_DAYS = 7;
+const MIN_PERIOD_DAYS = 1;
 const MAX_PERIOD_DAYS = 365;
 const MIN_PERIOD_MONTHS = 1;
 const MAX_PERIOD_MONTHS = 24;
 const MAX_DEPOSITS_PER_CYCLE = 3;
 
-function curSign(){ return CUR === 'USD' ? '$' : '€'; }
-function fmt(n){ return curSign() + Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
-function fmtPlain(n){ return Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
-
-function plural(n, forms){
-  n = Math.abs(n)%100;
-  const n1 = n%10;
-  if (n>10 && n<20) return forms[2];
-  if (n1>1 && n1<5) return forms[1];
-  if (n1===1) return forms[0];
-  return forms[2];
+function parsePeriodRaw(){
+  var raw = parseFloat(document.getElementById('periodN').value);
+  if(!isFinite(raw) || raw <= 0) return null;
+  return raw;
 }
-const M_FORMS = ['месяц','месяца','месяцев'];
-const D_FORMS = ['день','дня','дней'];
+
+function clampPeriodN(n){
+  n = Math.round(n);
+  if(PERIOD_UNIT === 'days'){
+    return Math.min(MAX_PERIOD_DAYS, Math.max(MIN_PERIOD_DAYS, n));
+  }
+  return Math.min(MAX_PERIOD_MONTHS, Math.max(MIN_PERIOD_MONTHS, n));
+}
 
 function readPeriodN(){
-  var raw = parseFloat(document.getElementById('periodN').value);
-  if(!isFinite(raw) || raw <= 0) raw = 1;
-  if(PERIOD_UNIT === 'days'){
-    raw = Math.round(raw);
-    return Math.min(MAX_PERIOD_DAYS, Math.max(MIN_PERIOD_DAYS, raw));
-  }
-  raw = Math.round(raw);
-  return Math.min(MAX_PERIOD_MONTHS, Math.max(MIN_PERIOD_MONTHS, raw));
+  var raw = parsePeriodRaw();
+  if(raw === null) return 1;
+  return clampPeriodN(raw);
 }
 
 function syncPeriodInputAttrs(){
@@ -364,12 +358,34 @@ function syncPeriodInputAttrs(){
 
 function updatePeriodPreview(){
   syncPeriodInputAttrs();
-  const n = readPeriodN();
-  const forms = PERIOD_UNIT === 'days' ? D_FORMS : M_FORMS;
-  document.getElementById('periodPreview').textContent = n + ' ' + plural(n, forms);
-  var el = document.getElementById('periodN');
-  if(el && String(el.value) !== String(n)) el.value = n;
+  var raw = parsePeriodRaw();
+  var display = raw !== null ? Math.round(raw) : 1;
+  var forms = PERIOD_UNIT === 'days' ? D_FORMS : M_FORMS;
+  document.getElementById('periodPreview').textContent = display + ' ' + plural(display, forms);
 }
+
+function commitPeriodN(){
+  var el = document.getElementById('periodN');
+  if(!el) return;
+  el.value = readPeriodN();
+  updatePeriodPreview();
+  calculate();
+}
+
+function curSign(){ return CUR === 'USD' ? '$' : '€'; }
+function fmt(n){ return curSign() + Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
+function fmtPlain(n){ return Math.round(n).toLocaleString('en-US').replace(/,/g,' '); }
+
+function plural(n, forms){
+  n = Math.abs(n)%100;
+  const n1 = n%10;
+  if (n>10 && n<20) return forms[2];
+  if (n1>1 && n1<5) return forms[1];
+  if (n1===1) return forms[0];
+  return forms[2];
+}
+const M_FORMS = ['месяц','месяца','месяцев'];
+const D_FORMS = ['день','дня','дней'];
 
 document.querySelectorAll('#curToggle button').forEach(b=>{
   b.onclick = ()=>{
@@ -426,7 +442,14 @@ document.querySelectorAll('#periodToggle button').forEach(b=>{
 
 ['initial','periodN','deposit','expenses'].forEach(id=>{
   const el = document.getElementById(id);
-  if (el) el.addEventListener('input', ()=>{ if(id==='periodN') updatePeriodPreview(); calculate(); });
+  if (!el) return;
+  el.addEventListener('input', ()=>{
+    if(id === 'periodN') updatePeriodPreview();
+    calculate();
+  });
+  if(id === 'periodN'){
+    el.addEventListener('blur', commitPeriodN);
+  }
 });
 
 function getPeriodInMonths(){
